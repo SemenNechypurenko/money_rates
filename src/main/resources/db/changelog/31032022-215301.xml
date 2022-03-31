@@ -7,10 +7,10 @@
     <changeSet author="Simon"  id="18aefd22-ab40-4850-9830-e92bc7c96fc8-3">
         <createTable tableName="user_roles">
             <column name="user_id" type="VARCHAR(255)">
-                <constraints nullable="false" />
+                <constraints  nullable="false"/>
             </column>
             <column name="role_id" type="VARCHAR(255)">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
         </createTable>
         <addForeignKeyConstraint constraintName="fk_UserInverse"

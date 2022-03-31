@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.request.RoleRequestDto;
+import com.example.demo.exception.RoleMoneyRateException;
 import com.example.demo.service.RoleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +19,10 @@ public class RoleController {
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody RoleRequestDto dto) {
-        service.create(dto);
-        return ResponseEntity.ok().build();
+        try{
+            return new ResponseEntity<>(service.create(dto), HttpStatus.OK);
+        } catch (RoleMoneyRateException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
     }
 }

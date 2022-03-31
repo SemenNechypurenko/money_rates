@@ -9,7 +9,7 @@
             <column  name="id"  type="VARCHAR(255)">
                 <constraints  nullable="false" primaryKey="true"  unique="true"/>
             </column>
-            <column  name="name"  type="VARCHAR(255)" />
+            <column  name="name"  type="VARCHAR(255)"></column>
             <column  name="second_name" type="VARCHAR(255)" />
             <column  name="email" type="VARCHAR(255)" />
             <column  name="date_of_birth" type="TIMESTAMP"/>
@@ -21,7 +21,9 @@
             <column  name="id"  type="VARCHAR(255)">
                 <constraints  nullable="false"  primaryKey="true"  unique="true"/>
             </column>
-            <column  name="title"  type="VARCHAR(255)" />
+            <column  name="title"  type="VARCHAR(255)">
+                <constraints  nullable="false" unique="true"/>
+            </column>
         </createTable>
     </changeSet>
 </databaseChangeLog>
