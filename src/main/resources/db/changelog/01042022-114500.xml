@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="Simon"  id="18aefd22-ab40-4850-9830-e92bc7c96fc8-4">
+        <createTable tableName="ref_errors" schemaName="public">
+            <column  name="id"  type="VARCHAR(255)">
+                <constraints  nullable="false" primaryKey="true"  unique="true"/>
+            </column>
+            <column  name="number"  type="BIGINT">
+                <constraints  nullable="false" unique="true"/>
+            </column>
+            <column  name="russian"  type="VARCHAR(255) " >
+                <constraints  nullable="false" unique="true"/>
+            </column>
+            <column  name="english" type="VARCHAR(255)" >
+                <constraints  nullable="false" unique="true"/>
+            </column>
+            <column  name="code" type="VARCHAR(255)" >
+                <constraints  nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Simon"  id="18aefd22-ab40-4850-9830-e92bc7c96fc8-5">
+        <insert  schemaName="public" tableName="ref_errors">
+            <column  name="id"  value="af03b734-3759-40ab-8d6f-6303510270f5"/>
+            <column  name="number"  value="1"/>
+            <column  name="russian"  value="Такая пользовательская роль уже существует!" />
+            <column  name="english" value="This user role already exists!" />
+            <column  name="code" value="Role" />
+        </insert>
+    </changeSet>
+</databaseChangeLog>

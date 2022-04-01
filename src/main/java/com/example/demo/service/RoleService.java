@@ -2,7 +2,9 @@ package com.example.demo.service;
 
 import com.example.demo.dto.request.RoleRequestDto;
 import com.example.demo.exception.RoleMoneyRateException;
+import com.example.demo.model.RefErrors;
 import com.example.demo.model.Role;
+import com.example.demo.repository.RefErrorsRepository;
 import com.example.demo.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
@@ -18,6 +20,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RoleService {
     private final RoleRepository repository;
+    private final RefErrorsRepository errorsRepository;
     private final ModelMapper mapper;
 
     @Transactional
@@ -29,7 +32,9 @@ public class RoleService {
     }
     private void validateOnCreateOrUpdate(RoleRequestDto dto) throws RoleMoneyRateException {
         if (CollectionUtils.isNotEmpty(repository.findByTitle(dto.getTitle()))) {
-            throw new RoleMoneyRateException("Такой пользователь уже существует");
+            RefErrors error = errorsRepository.findByNumber(1L).orElse(null);
+            assert error != null;
+            throw new RoleMoneyRateException(error.getRussian(), error.getEnglish(), error.getCode(), error.getNumber());
         }
     }
 
