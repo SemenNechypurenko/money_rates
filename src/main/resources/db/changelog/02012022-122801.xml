@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="Simon"  id="18aefd22-ab40-4850-9830-e92bc7c96fc8-6">
+        <insert  schemaName="public" tableName="ref_errors">
+            <column  name="id"  value="2fc9a0d2-d821-4eb7-9d03-5b3545acbb7c12"/>
+            <column  name="number"  value="102"/>
+            <column  name="russian"  value="Пользователь с таким электронным адресом уже существует!" />
+            <column  name="english" value="User with this email already exists!" />
+            <column  name="code" value="User" />
+        </insert>
+    </changeSet>
+    <changeSet author="Simon"  id="18aefd22-ab40-4850-9830-e92bc7c96fc8-72">
+        <insert  schemaName="public" tableName="ref_errors">
+            <column  name="id"  value="1257cb3f-f993-44b0-b295-74dd7589db34d3"/>
+            <column  name="number"  value="101"/>
+            <column  name="russian"  value="Пользователь с таким никнеймом уже существует!" />
+            <column  name="english" value="User with this login already exists!" />
+            <column  name="code" value="User" />
+        </insert>
+    </changeSet>
+    <changeSet author="Simon"  id="18aefd22-ab40-4850-9830-e92bc7c96fc8-82">
+        <addColumn schemaName= "public"
+                   tableName="users" >
+            <column afterColumn="id"
+                    name="login"
+                    type="varchar(250)" >
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

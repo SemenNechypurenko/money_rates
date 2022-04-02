@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -33,7 +34,7 @@ public class RoleService {
     private void validateOnCreateOrUpdate(RoleRequestDto dto) throws RoleMoneyRateException {
         if (CollectionUtils.isNotEmpty(repository.findByTitle(dto.getTitle()))) {
             RefErrors error = errorsRepository.findByNumber(1L).orElse(null);
-            assert error != null;
+            assert Objects.nonNull(error);
             throw new RoleMoneyRateException(error.getRussian(), error.getEnglish(), error.getCode(), error.getNumber());
         }
     }
