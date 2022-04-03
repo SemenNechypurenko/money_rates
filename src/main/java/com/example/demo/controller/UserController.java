@@ -1,18 +1,18 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.request.UserRequestDto;
+import com.example.demo.dto.request.UserUpdateRequestDto;
+import com.example.demo.exception.RoleMoneyRateException;
 import com.example.demo.exception.UserMoneyRateException;
+import com.example.demo.model.User;
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
 
 @RequiredArgsConstructor
 @RestController
@@ -26,8 +26,34 @@ public class UserController {
     public ResponseEntity<?> create(@Valid @RequestBody UserRequestDto dto) {
         try{
             return new ResponseEntity<>(service.create(dto), HttpStatus.OK);
-        } catch (UserMoneyRateException e) {
+        } catch (UserMoneyRateException | RoleMoneyRateException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
+    }
+
+    @PutMapping("/{login}")
+    public ResponseEntity<?> update(@Valid @RequestBody UserUpdateRequestDto dto,
+                                    @PathVariable("login") String login) {
+        try{
+            return new ResponseEntity<>(service.update(dto, login), HttpStatus.OK);
+        } catch (UserMoneyRateException | RoleMoneyRateException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
+    }
+
+    @GetMapping
+    public Page<User> list(@RequestParam("page") int page,
+                           @RequestParam("size") int size,
+                            @RequestParam("sort") String sort) {
+        return service.list(page, size, sort);
+    }
+    @GetMapping("/{login}")
+    public ResponseEntity<?> get(@PathVariable("login") String login) {
+        try {
+            User user = service.findByName(login);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (UserMoneyRateException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 }

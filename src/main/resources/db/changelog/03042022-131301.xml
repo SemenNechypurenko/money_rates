@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="Simon"  id="18aefd22-ab40-4850-9830-e92bc7c96fc8452">
+        <insert  schemaName="public" tableName="ref_errors">
+            <column  name="id"  value="1257cb3f-f993-44b0-b295-74ddshjs3lf6djud9db34d3"/>
+            <column  name="number"  value="103"/>
+            <column  name="russian"  value="Пользователь таким никнеймом не найден." />
+            <column  name="english" value="User with this login is not found." />
+            <column  name="code" value="User" />
+        </insert>
+    </changeSet>
+</databaseChangeLog>
