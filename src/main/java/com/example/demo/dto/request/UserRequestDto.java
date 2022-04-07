@@ -31,5 +31,8 @@ public class UserRequestDto {
     @NotBlank
     private String login;
 
+    @NotBlank
+    private String password;
+
     private Set<String> roles;
 }

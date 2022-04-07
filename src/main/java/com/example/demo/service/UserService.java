@@ -19,20 +19,28 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserRepository repository;
     private final ModelMapper mapper;
     private final RefErrorsRepository errorsRepository;
     private final RoleService roleService;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
     public User create(UserRequestDto dto) throws UserMoneyRateException, RoleMoneyRateException {
@@ -72,6 +80,7 @@ public class UserService {
             UserRequestDto dto = mappingContext.getSource();
             user.setId(UUID.randomUUID().toString());
             user.setDateOfRegistration(new Date());
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
             return user;
         };
         mapper.createTypeMap(UserRequestDto.class, User.class).setPostConverter(toEntity);
@@ -114,5 +123,16 @@ public class UserService {
             }
             user.setRoles(roles);
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+       User user = repository.findUserByLogin(username).orElse(null);
+       if (Objects.isNull(user)) {
+           throw new UsernameNotFoundException("");
+       }
+        Collection<? extends GrantedAuthority> authorities =
+                user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getTitle())).collect(Collectors.toSet());
+        return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), authorities);
     }
 }

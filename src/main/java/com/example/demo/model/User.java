@@ -27,13 +27,16 @@ public class User {
     @Column(name="login")
     private String login;
 
+    @Column(name="password")
+    private String password;
+
     @Column(name="date_of_birth")
     private Date dateOfBirth;
 
     @Column(name="date_of_registration")
     private Date dateOfRegistration;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="user_roles",
             joinColumns=@JoinColumn(name="user_id"),
             inverseJoinColumns=@JoinColumn(name="role_id"))
