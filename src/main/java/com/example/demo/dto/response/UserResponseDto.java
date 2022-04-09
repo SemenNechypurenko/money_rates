@@ -11,14 +11,11 @@ import java.util.Set;
 public class UserResponseDto {
     private String id;
     private String name;
-    @JsonProperty("second_name")
     private String secondName;
     private String email;
     private String login;
     private String password;
-    @JsonProperty("date_of_birth")
     private Date dateOfBirth;
-    @JsonProperty("date_of_registration")
     private Date dateOfRegistration;
     private Set<RoleResponseDto> roles = new HashSet<>();
 }
