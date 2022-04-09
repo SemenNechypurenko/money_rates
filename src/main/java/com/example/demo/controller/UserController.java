@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -25,7 +26,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody UserRequestDto dto) {
         try{
-            return new ResponseEntity<>(service.create(dto), HttpStatus.OK);
+            return new ResponseEntity<>(service.create(dto), HttpStatus.CREATED);
         } catch (UserMoneyRateException | RoleMoneyRateException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
@@ -42,10 +43,8 @@ public class UserController {
     }
 
     @GetMapping
-    public Page<User> list(@RequestParam("page") int page,
-                           @RequestParam("size") int size,
-                            @RequestParam("sort") String sort) {
-        return service.list(page, size, sort);
+    public List<User> list() {
+        return service.list();
     }
     @GetMapping("/{login}")
     public ResponseEntity<?> get(@PathVariable("login") String login) {

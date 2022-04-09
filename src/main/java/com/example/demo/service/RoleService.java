@@ -1,20 +1,21 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.request.RoleRequestDto;
+import com.example.demo.dto.response.RoleResponseDto;
 import com.example.demo.exception.RoleMoneyRateException;
-import com.example.demo.exception.UserMoneyRateException;
 import com.example.demo.model.RefErrors;
 import com.example.demo.model.Role;
-import com.example.demo.model.User;
 import com.example.demo.repository.RefErrorsRepository;
 import com.example.demo.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.spi.MappingContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -28,8 +29,7 @@ public class RoleService {
     @Transactional
     public Role create(RoleRequestDto dto) throws RoleMoneyRateException {
         validateOnCreateOrUpdate(dto);
-        Role role = new Role();
-        mapper.map(dto, role);
+        Role role = mapper.map(dto, Role.class);
         return repository.save(role);
     }
     private void validateOnCreateOrUpdate(RoleRequestDto dto) throws RoleMoneyRateException {
@@ -37,7 +37,15 @@ public class RoleService {
             throwException(1L);
         }
     }
+    public void throwException(Long exceptionNumber) throws RoleMoneyRateException {
+        RefErrors error = errorsRepository.findByNumber(exceptionNumber).orElse(null);
+        assert Objects.nonNull(error);
+        throw new RoleMoneyRateException(error.getRussian(), error.getEnglish(), error.getCode(), error.getNumber());
+    }
 
+    public List<Role> list() {
+        return repository.findAll();
+    }
     public Role findByTitle(String title) throws RoleMoneyRateException {
         Role role = repository.findRoleByTitle(title).orElse(null);
         if (Objects.isNull(role)) {
@@ -53,12 +61,11 @@ public class RoleService {
             role.setId(UUID.randomUUID().toString());
             return role;
         };
-        mapper.createTypeMap(RoleRequestDto.class, Role.class).setPostConverter(toEntity);
-    }
 
-    public void throwException(Long exceptionNumber) throws RoleMoneyRateException {
-        RefErrors error = errorsRepository.findByNumber(exceptionNumber).orElse(null);
-        assert Objects.nonNull(error);
-        throw new RoleMoneyRateException(error.getRussian(), error.getEnglish(), error.getCode(), error.getNumber());
+        Converter<Role, RoleResponseDto> fromEntity = MappingContext::getDestination;
+
+        mapper.createTypeMap(RoleRequestDto.class, Role.class).setPostConverter(toEntity);
+        mapper.createTypeMap(Role.class, RoleResponseDto.class).setPostConverter(fromEntity);
+
     }
 }

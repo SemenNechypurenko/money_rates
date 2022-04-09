@@ -2,6 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.dto.request.UserRequestDto;
 import com.example.demo.dto.request.UserUpdateRequestDto;
+import com.example.demo.dto.response.RoleResponseDto;
+import com.example.demo.dto.response.UserResponseDto;
 import com.example.demo.exception.RoleMoneyRateException;
 import com.example.demo.exception.UserMoneyRateException;
 import com.example.demo.model.RefErrors;
@@ -15,10 +17,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -52,9 +50,8 @@ public class UserService implements UserDetailsService {
         mapper.map(dto, user);
         return repository.save(user);
     }
-    public Page<User> list(int page, int size, String sort) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
-        return repository.findAll(pageable);
+    public List<User> list() {
+        return repository.findAll();
     }
 
     private void validateOnCreate(UserRequestDto dto) throws UserMoneyRateException, RoleMoneyRateException {
@@ -83,7 +80,17 @@ public class UserService implements UserDetailsService {
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
             return user;
         };
+        Converter<User, UserResponseDto> fromEntity = mappingContext -> {
+            UserResponseDto response = mappingContext.getDestination();
+            User user = mappingContext.getSource();
+            response.setRoles(user.getRoles().stream()
+                    .map(role -> mapper.map(role, RoleResponseDto.class))
+                    .collect(Collectors.toSet())
+            );
+            return response;
+        };
         mapper.createTypeMap(UserRequestDto.class, User.class).setPostConverter(toEntity);
+        mapper.createTypeMap(User.class, UserResponseDto.class).setPostConverter(fromEntity);
     }
 
     public User findByName(String login) throws UserMoneyRateException {
@@ -100,6 +107,7 @@ public class UserService implements UserDetailsService {
         throw new UserMoneyRateException(error.getRussian(), error.getEnglish(), error.getCode(), error.getNumber());
     }
 
+    @Transactional
     public User update(UserUpdateRequestDto dto, String login) throws UserMoneyRateException, RoleMoneyRateException {
         User user = findByName(login);
         if (StringUtils.isNotBlank(dto.getName())) {
@@ -126,10 +134,14 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
        User user = repository.findUserByLogin(username).orElse(null);
        if (Objects.isNull(user)) {
-           throw new UsernameNotFoundException("");
+           try {
+               throwException(103L);
+           } catch (UserMoneyRateException e) {
+               throw new RuntimeException(e);
+           }
        }
         Collection<? extends GrantedAuthority> authorities =
                 user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getTitle())).collect(Collectors.toSet());
