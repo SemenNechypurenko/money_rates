@@ -17,11 +17,12 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -110,17 +111,27 @@ public class UserService implements UserDetailsService {
     @Transactional
     public User update(UserUpdateRequestDto dto, String login) throws UserMoneyRateException, RoleMoneyRateException {
         User user = findByName(login);
-        if (StringUtils.isNotBlank(dto.getName())) {
-            user.setName(dto.getName());
+        // Проверка, что апдейтить юзера может только админ или же пользовать сам себя
+        User currentUserName = findByName(getCurrentUserName());
+        if (login.equals(getCurrentUserName()) ||
+                currentUserName.getRoles().stream().anyMatch(role -> role.getTitle().equals("ROLE_ADMIN"))) {
+            if (StringUtils.isNotBlank(dto.getName())) {
+                user.setName(dto.getName());
+            }
+            if (StringUtils.isNotBlank(dto.getSecondName())) {
+                user.setSecondName(dto.getSecondName());
+            }
+            if (Objects.nonNull(dto.getDateOfBirth())) {
+                user.setDateOfBirth(dto.getDateOfBirth());
+            }
+            // Only admins can assign roles to users
+            if (currentUserName.getRoles().stream().anyMatch(role -> role.getTitle().equals("ROLE_ADMIN"))) {
+                setUserRoles(dto.getRoles(), user);
+            }
+            return repository.save(user);
         }
-        if (StringUtils.isNotBlank(dto.getSecondName())) {
-            user.setSecondName(dto.getSecondName());
-        }
-        if (Objects.nonNull(dto.getDateOfBirth())) {
-            user.setDateOfBirth(dto.getDateOfBirth());
-        }
-        setUserRoles(dto.getRoles(), user);
-        return repository.save(user);
+        throwException(104L);
+        return null;
     }
 
     private void setUserRoles (Set<String> roleTitles, User user) throws RoleMoneyRateException {
@@ -146,5 +157,10 @@ public class UserService implements UserDetailsService {
         Collection<? extends GrantedAuthority> authorities =
                 user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getTitle())).collect(Collectors.toSet());
         return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), authorities);
+    }
+
+    public String getCurrentUserName() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName(); 
     }
 }

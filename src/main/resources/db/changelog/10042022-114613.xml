@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="Simon"  id="9662d78a-f0aa-414b-bac6-3824914afc9c">
+        <insert  schemaName="public" tableName="ref_errors">
+            <column  name="id"  value="282600fe-e284-4343-9ec9-3228c665e1d1"/>
+            <column  name="number"  value="104"/>
+            <column  name="russian"  value="Редактирование чужих учетных записей разрешено только администраторам." />
+            <column  name="english" value="Editing other people's accounts is allowed only to administrators." />
+            <column  name="code" value="User" />
+        </insert>
+    </changeSet>
+</databaseChangeLog>
