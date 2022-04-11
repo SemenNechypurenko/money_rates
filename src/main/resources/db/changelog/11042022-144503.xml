@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="Simon"  id="a0f0fcd1-4115-47c5-9783-e8554e3ac605">
+        <createTable tableName="subscriptions" schemaName="public">
+            <column  name="id"  type="VARCHAR(255)">
+                <constraints  nullable="false" primaryKey="true"  unique="true"/>
+            </column>
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false"
+                             foreignKeyName="fk_user"
+                             references="users(id)"/>
+            </column>
+            <column name="currency" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_of_subscription" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="delta_change" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="period" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timeline" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
