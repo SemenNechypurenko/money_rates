@@ -42,7 +42,6 @@ public class User {
             inverseJoinColumns=@JoinColumn(name="role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     private Set<Subscription> subscriptions = new HashSet<>();
 }
