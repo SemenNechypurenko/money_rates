@@ -3,6 +3,7 @@ package com.example.demo.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name="money_rates", schema="public")
+@ToString
 public class Coin {
     @Id
     @Column(name="id")

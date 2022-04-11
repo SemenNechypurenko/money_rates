@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.coinCryptoMoneyRateClient.MoneyRatesService;
 import com.example.demo.model.Coin;
 import com.example.demo.repository.CoinRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,18 +14,18 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class CoinService {
     private final CoinRepository repository;
-    private final MoneyRatesService moneyRatesService;
 
     @Transactional
     public Coin create(Coin coin) {
         return repository.save(coin);
     }
 
-    public List<Coin> list(Date before, Date after) {
-        // тестовое сохранение курса битка
-        // сделать шедулер
-        repository.saveAll(moneyRatesService.getCoinRates());
+    @Transactional
+    public List<Coin> createFromList(List<Coin> coins) {
+        return repository.saveAll(coins);
+    }
 
+    public List<Coin> list(Date before, Date after) {
         if (Objects.isNull(before) && Objects.isNull(after)) {
             return repository.findAll();
         }
