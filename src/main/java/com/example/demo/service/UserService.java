@@ -102,7 +102,7 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    private void throwException(Long exceptionNumber) throws UserMoneyRateException {
+    public void throwException(Long exceptionNumber) throws UserMoneyRateException {
         RefErrors error = errorsRepository.findByNumber(exceptionNumber).orElse(null);
         assert Objects.nonNull(error);
         throw new UserMoneyRateException(error.getRussian(), error.getEnglish(), error.getCode(), error.getNumber());

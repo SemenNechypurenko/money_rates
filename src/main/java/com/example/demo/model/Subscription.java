@@ -19,7 +19,7 @@ public class Subscription {
     private String userId;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="user_id", nullable=false)
     private User user;
 
@@ -34,7 +34,7 @@ public class Subscription {
 
     // percentage change over a specified time period to send to email
     @Column(name = "delta_change", nullable=false)
-    private Integer deltaChange;
+    private Integer delta ;
 
 
     // inform a user via email after period
