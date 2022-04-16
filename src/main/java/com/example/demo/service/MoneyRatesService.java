@@ -1,4 +1,4 @@
-package com.example.demo.coinCryptoMoneyRateClient;
+package com.example.demo.service;
 
 import com.example.demo.coinCryptoMoneyRateClient.api.ApiCoingecko;
 import com.example.demo.model.Coin;

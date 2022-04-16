@@ -46,4 +46,8 @@ public class Subscription {
     @Enumerated(EnumType.STRING)
     @Column(name = "timeline", nullable=false)
     private Timeline timeline;
+
+    // delta of percent to be changed before informing a user via email
+    @Column(name = "date_of_last_email_sent", nullable=false)
+    private Date dateOfLastEmail;
 }

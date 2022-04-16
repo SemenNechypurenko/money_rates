@@ -16,4 +16,5 @@ public class UserResponseDto {
     private Date dateOfBirth;
     private Date dateOfRegistration;
     private Set<RoleResponseDto> roles = new HashSet<>();
+    private Set<SubscriptionResponseDto> subscriptions = new HashSet<>();
 }

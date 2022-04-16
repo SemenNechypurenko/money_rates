@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.request.SubscriptionRequestDto;
+import com.example.demo.dto.response.SubscriptionResponseDto;
 import com.example.demo.exception.UserMoneyRateException;
 import com.example.demo.model.RefErrors;
 import com.example.demo.model.Subscription;
@@ -13,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.EnumUtils;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.spi.MappingContext;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,8 +47,6 @@ public class SubscriptionService {
     private void validateOnCreate(SubscriptionRequestDto dto) throws UserMoneyRateException {
         userService.findByName(dto.getLogin());
         if (!EnumUtils.isValidEnumIgnoreCase(Timeline.class, dto.getTimeline())) {
-            // Такая временная шакала отсутствует
-            // Добавить исключение
             throwException(201L);
         }
     }
@@ -67,7 +68,10 @@ public class SubscriptionService {
             subscription.setTimeline(Enum.valueOf(Timeline.class, dto.getTimeline()));
             return subscription;
         };
+        Converter<Subscription, SubscriptionResponseDto> fromEntity = MappingContext::getDestination;
+
         mapper.createTypeMap(SubscriptionRequestDto.class, Subscription.class).setPostConverter(toEntity);
+        mapper.createTypeMap(Subscription.class, SubscriptionResponseDto.class).setPostConverter(fromEntity);
     }
 
     public List<Subscription> list() {

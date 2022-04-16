@@ -1,6 +1,6 @@
-package com.example.demo.coinCryptoMoneyRateClient.sheduler;
+package com.example.demo.sheduler;
 
-import com.example.demo.coinCryptoMoneyRateClient.MoneyRatesService;
+import com.example.demo.service.MoneyRatesService;
 import com.example.demo.model.Coin;
 import com.example.demo.service.CoinService;
 import lombok.RequiredArgsConstructor;

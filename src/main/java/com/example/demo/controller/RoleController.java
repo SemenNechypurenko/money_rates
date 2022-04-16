@@ -42,7 +42,7 @@ public class RoleController {
                 .collect(Collectors.toSet());
     }
 
-    RoleResponseDto serialize(Role role) {
+    private RoleResponseDto serialize(Role role) {
         return mapper.map(role, RoleResponseDto.class);
     }
 }

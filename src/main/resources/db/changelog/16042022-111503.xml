@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="Simon"  id="9662d78a-f0aa-414b-bac6-1874914afc6d8f">
+        <insert  schemaName="public" tableName="ref_errors">
+            <column  name="id"  value="2d9f0600fe-e284-4343-9ec9-36kj5k4l65e1d1-1"/>
+            <column  name="number"  value="105"/>
+            <column  name="russian"  value="Пользователь с таким идентификатором не найден." />
+            <column  name="english" value="The user with this identifier was not found." />
+            <column  name="code" value="User" />
+        </insert>
+    </changeSet>
+    <changeSet author="Simon"  id="9662d78a-f0aa-414b-bac6-1874914afc6d8f-2">
+        <insert  schemaName="public" tableName="ref_errors">
+            <column  name="id"  value="2d98skdl00fe-e284-43hfsjflkf8as9s4l65e1d1-1"/>
+            <column  name="number"  value="201"/>
+            <column  name="russian"  value="Такая временная шакала %s отсутствует." />
+            <column  name="english" value="There is no such time jackal %s" />
+            <column  name="code" value="Subscription" />
+        </insert>
+    </changeSet>
+</databaseChangeLog>

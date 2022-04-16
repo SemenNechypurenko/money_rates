@@ -3,13 +3,16 @@ package com.example.demo.service;
 import com.example.demo.dto.request.UserRequestDto;
 import com.example.demo.dto.request.UserUpdateRequestDto;
 import com.example.demo.dto.response.RoleResponseDto;
+import com.example.demo.dto.response.SubscriptionResponseDto;
 import com.example.demo.dto.response.UserResponseDto;
 import com.example.demo.exception.RoleMoneyRateException;
 import com.example.demo.exception.UserMoneyRateException;
 import com.example.demo.model.RefErrors;
 import com.example.demo.model.Role;
+import com.example.demo.model.Subscription;
 import com.example.demo.model.User;
 import com.example.demo.repository.RefErrorsRepository;
+import com.example.demo.repository.SubscriptionRepository;
 import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +20,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -40,7 +45,7 @@ public class UserService implements UserDetailsService {
     private final RefErrorsRepository errorsRepository;
     private final RoleService roleService;
     private final BCryptPasswordEncoder passwordEncoder;
-
+    private final SubscriptionRepository subscriptionRepository;
     @Transactional
     public User create(UserRequestDto dto) throws UserMoneyRateException, RoleMoneyRateException {
         validateOnCreate(dto);
@@ -73,6 +78,7 @@ public class UserService implements UserDetailsService {
 
     @PostConstruct
     public void convert() {
+
         Converter<UserRequestDto, User> toEntity = mappingContext -> {
             User user = mappingContext.getDestination();
             UserRequestDto dto = mappingContext.getSource();
@@ -88,6 +94,14 @@ public class UserService implements UserDetailsService {
                     .map(role -> mapper.map(role, RoleResponseDto.class))
                     .collect(Collectors.toSet())
             );
+            Set<Subscription> subscriptions = subscriptionRepository.findAllByUser(user);
+                if (CollectionUtils.isNotEmpty(subscriptions)) {
+                    response.setSubscriptions(
+                            subscriptions.stream().map(subscription ->
+                                    mapper.map(subscription, SubscriptionResponseDto.class))
+                                    .collect(Collectors.toSet())
+                    );
+                }
             return response;
         };
         mapper.createTypeMap(UserRequestDto.class, User.class).setPostConverter(toEntity);
@@ -163,4 +177,13 @@ public class UserService implements UserDetailsService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName(); 
     }
+
+    public User findById(String id) throws UserMoneyRateException {
+        User user = repository.findById(id).orElse(null);
+        if (Objects.isNull(user)) {
+            throwException(105L);
+        }
+        return user;
+    }
+
 }
