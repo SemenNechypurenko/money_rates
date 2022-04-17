@@ -21,7 +21,10 @@ public class CoinService {
     public Coin create(Coin coin) {
         return repository.save(coin);
     }
-
+    @Transactional
+    public Coin update(Coin coin) {
+        return repository.save(coin);
+    }
     @Transactional
     public List<Coin> createFromList(List<Coin> coins) {
         return repository.saveAll(coins);

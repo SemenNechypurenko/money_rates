@@ -1,4 +1,4 @@
-package com.example.demo.coinCryptoMoneyRateClient.api;
+package com.example.demo.cryptomoneyrateclient;
 
 import com.example.demo.model.Coin;
 import com.fasterxml.jackson.databind.JsonNode;

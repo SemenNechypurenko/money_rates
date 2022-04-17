@@ -24,7 +24,6 @@ public class MoneyCryptoReceiverScheduler {
     @Scheduled(cron = "*/30 * * * * *")
     public void receiveCryptoRates() {
         List<Coin> coinRates = moneyRatesService.getCoinRates();
-        coinService.createFromList(coinRates);
-        log.info("Saved fallowing coin rates: {}", coinRates);
+        log.info("Saved fallowing coin rates: {}", coinService.createFromList(coinRates));
     }
 }

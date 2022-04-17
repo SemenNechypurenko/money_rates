@@ -15,7 +15,6 @@ import org.apache.commons.lang3.EnumUtils;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.spi.MappingContext;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,6 +41,11 @@ public class SubscriptionService {
             repository.delete(subscription);
         }
         return repository.save(mapper.map(dto, Subscription.class));
+    }
+
+    @Transactional
+    public Subscription update (Subscription subscription) {
+        return repository.save(subscription);
     }
 
     private void validateOnCreate(SubscriptionRequestDto dto) throws UserMoneyRateException {

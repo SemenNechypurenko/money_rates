@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.coinCryptoMoneyRateClient.api.ApiCoingecko;
+import com.example.demo.cryptomoneyrateclient.ApiCoingecko;
 import com.example.demo.model.Coin;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
