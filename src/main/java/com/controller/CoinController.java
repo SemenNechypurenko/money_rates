@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("coins")
+@RequestMapping("api/coins")
 public class CoinController {
     private final CoinService service;
 

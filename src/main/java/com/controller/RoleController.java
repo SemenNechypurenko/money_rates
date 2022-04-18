@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("roles")
+@RequestMapping("api/roles")
 public class RoleController {
     private final RoleService service;
     private final ModelMapper mapper;

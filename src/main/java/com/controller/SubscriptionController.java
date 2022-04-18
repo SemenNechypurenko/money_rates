@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("subscriptions")
+@RequestMapping("api/subscriptions")
 public class SubscriptionController {
 
     private final SubscriptionService service;
