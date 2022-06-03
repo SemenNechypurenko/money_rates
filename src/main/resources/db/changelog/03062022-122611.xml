@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="Simon"  id="52690fa9-7d53-457d-9c91-9ce84c9edcb2">
+        <createTable tableName="audit" schemaName="public">
+            <column  name="id"  type="VARCHAR(255)">
+                <constraints  nullable="false" primaryKey="true"  unique="true"/>
+            </column>
+            <column  name="method_name"  type="VARCHAR(255)"/>
+            <column  name="user_name" type="VARCHAR(255)" />
+            <column  name="user_id" type="VARCHAR(255)" />
+            <column  name="date_of_execution" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

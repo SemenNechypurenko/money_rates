@@ -4,8 +4,6 @@ import lombok.Data;
 
 @Data
 public class SubscriptionRequestDto {
-    private String id;
-    private String login;
     private String currency;
     // delta of percent to be changed before informing a user via email
     private Integer delta;

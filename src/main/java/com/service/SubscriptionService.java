@@ -15,6 +15,8 @@ import org.apache.commons.lang3.EnumUtils;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.spi.MappingContext;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,10 +35,12 @@ public class SubscriptionService {
     private final RefErrorsRepository errorsRepository;
 
     @Transactional
+    @CacheEvict(value = "subscriptions", allEntries=true)
     public Subscription create(SubscriptionRequestDto dto) throws UserMoneyRateException {
         validateOnCreate(dto);
         Subscription subscription = repository.
-                findByUserAndCurrency(userService.findByName(dto.getLogin()), dto.getCurrency()).orElse(null);
+                findByUserAndCurrency(userService.findByName(userService.getCurrentUserName()),
+                        dto.getCurrency()).orElse(null);
         if (Objects.nonNull(subscription)) {
             repository.delete(subscription);
         }
@@ -44,12 +48,12 @@ public class SubscriptionService {
     }
 
     @Transactional
+    @CacheEvict(value = "subscriptions", allEntries=true)
     public Subscription update (Subscription subscription) {
         return repository.save(subscription);
     }
 
     private void validateOnCreate(SubscriptionRequestDto dto) throws UserMoneyRateException {
-        userService.findByName(dto.getLogin());
         if (!EnumUtils.isValidEnumIgnoreCase(Timeline.class, dto.getTimeline())) {
             throwException(201L);
         }
@@ -67,7 +71,8 @@ public class SubscriptionService {
             Subscription subscription = mappingContext.getDestination();
             SubscriptionRequestDto dto = mappingContext.getSource();
             subscription.setId(UUID.randomUUID().toString());
-            subscription.setUser(userRepository.findUserByLogin(dto.getLogin()).orElse(null));
+            subscription.setUser(userRepository.findUserByLogin(userService.getCurrentUserName()).orElse(null));
+            subscription.setUserId(userService.getCurrentUser().getId());
             subscription.setDateOfSubscription(new Date());
             subscription.setTimeline(Enum.valueOf(Timeline.class, dto.getTimeline()));
             return subscription;
@@ -78,6 +83,7 @@ public class SubscriptionService {
         mapper.createTypeMap(Subscription.class, SubscriptionResponseDto.class).setPostConverter(fromEntity);
     }
 
+    @Cacheable("subscriptions")
     public List<Subscription> list() {
         return repository.findAll();
     }

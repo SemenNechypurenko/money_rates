@@ -1,5 +1,6 @@
 package com.controller;
 
+import com.aspect.annotations.LoggingRest;
 import com.dto.request.SubscriptionRequestDto;
 import com.dto.response.SubscriptionResponseDto;
 import com.exception.UserMoneyRateException;
@@ -27,6 +28,7 @@ public class SubscriptionController {
     private final ModelMapper mapper;
 
     @PostMapping
+    @LoggingRest(executor = "USER", method = "CREATE", model = "SUBSCRIPTION")
     public ResponseEntity<?> create(@Valid @RequestBody SubscriptionRequestDto dto) {
         try{
             return new ResponseEntity<>(serialize(service.create(dto)), HttpStatus.CREATED);

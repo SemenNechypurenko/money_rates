@@ -14,19 +14,15 @@ public class Subscription {
     @Column(name="id")
     private String id;
 
-
     @Column(name="user_id", insertable = false, updatable = false)
     private String userId;
-
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="user_id", nullable=false)
     private User user;
 
-
     @Column(name = "currency", nullable=false)
     private String currency;
-
 
     // delta of percent to be changed before informing a user via email
     @Column(name = "date_of_subscription", nullable=false)
@@ -36,11 +32,9 @@ public class Subscription {
     @Column(name = "delta_change", nullable=false)
     private Integer delta ;
 
-
     // inform a user via email after period
     @Column(name = "period", nullable=false)
     private Integer period;
-
 
     // user to be informed via email after period * timeline (minute, hour, day)
     @Enumerated(EnumType.STRING)
@@ -49,5 +43,5 @@ public class Subscription {
 
     // delta of percent to be changed before informing a user via email
     @Column(name = "date_of_last_email_sent", nullable=false)
-    private Date dateOfLastEmail;
+    private Date dateOfLastEmail = new Date();
 }

@@ -76,7 +76,6 @@ public class UserService implements UserDetailsService {
 
     @PostConstruct
     public void convert() {
-
         Converter<UserRequestDto, User> toEntity = mappingContext -> {
             User user = mappingContext.getDestination();
             UserRequestDto dto = mappingContext.getSource();
@@ -124,7 +123,7 @@ public class UserService implements UserDetailsService {
     public User update(UserUpdateRequestDto dto, String login) throws UserMoneyRateException, RoleMoneyRateException {
         User user = findByName(login);
         // Проверка, что апдейтить юзера может только админ или же пользовать сам себя
-        User currentUserName = findByName(getCurrentUserName());
+        User currentUserName = getCurrentUser();
         if (login.equals(getCurrentUserName()) ||
                 currentUserName.getRoles().stream().anyMatch(role -> role.getTitle().equals("ROLE_ADMIN"))) {
             if (StringUtils.isNotBlank(dto.getName())) {
@@ -182,6 +181,14 @@ public class UserService implements UserDetailsService {
             throwException(105L);
         }
         return user;
+    }
+
+    public User getCurrentUser() {
+        try {
+            return findByName(getCurrentUserName());
+        } catch (UserMoneyRateException e) {
+            return null;
+        }
     }
 
 }
